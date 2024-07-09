@@ -14,6 +14,15 @@ public class PlayerMovement : MonoBehaviour
     public float normDrag;
     public float moveMultiplier;
 
+    [Header("Jump")]
+    public float jumpForce;
+    public float jumpCooldown;
+    public float airMultiplier;
+    bool canJump;
+
+    [Header("Keybinds")]
+    public KeyCode jumpKey = KeyCode.Space;
+
     public Transform orientation;
 
     float horizontalInput;
@@ -23,22 +32,25 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    /*[Header("GroundCheck")]
+    [Header("GroundCheck")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    bool grounded;*/
+    bool grounded;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        canJump = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight, whatIsGround);
         PlayerInput();
+        AdjustSpeed();
 
         //to be deleted
         Debuging();
@@ -53,6 +65,16 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+
+        //when to jump
+        if (Input.GetKey(jumpKey) && canJump && grounded)
+        {
+            canJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
     }
 
     private void MovePlayer()
@@ -60,13 +82,22 @@ public class PlayerMovement : MonoBehaviour
         //calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        rb.AddForce(moveDirection.normalized * moveSpeed * moveMultiplier, ForceMode.Force);
+        //onGround
+        if (grounded)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * moveMultiplier, ForceMode.Force);
+        }
+
+        //in air
+        else if (!grounded)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * moveMultiplier * airMultiplier, ForceMode.Force);
+        }
+        
     }
 
     private void SpeedControl()
     {
-        AdjustSpeed();
-
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         if (flatVel.magnitude > moveSpeed)
         {
@@ -77,20 +108,46 @@ public class PlayerMovement : MonoBehaviour
 
     private void AdjustSpeed()
     {
-        //moving forward only
-        if(verticalInput == 1 && horizontalInput == 0)
+        if (grounded)
         {
-            rb.drag = forwardDrag;
+            //moving forward only
+            if (verticalInput == 1 && horizontalInput == 0)
+            {
+                rb.drag = forwardDrag;
+            }
+            else
+            {
+                rb.drag = normDrag;
+            }
         }
         else
         {
-            rb.drag = normDrag;
+            rb.drag = 0;
         }
+        
     }
 
     private void Debuging()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        speedText.text = "Speed: " + flatVel.magnitude.ToString();
+
+        if(speedText!= null)
+        {
+            speedText.text = "Speed: " + flatVel.magnitude.ToString();
+        }
+        
+    }
+
+    private void Jump()
+    {
+        //reset y velocity
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void ResetJump()
+    {
+        canJump = true;
     }
 }
