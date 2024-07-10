@@ -5,6 +5,7 @@ using UnityEngine;
 public class AlwaysFacePlayer : MonoBehaviour
 {
     public GameObject Target;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +17,7 @@ public class AlwaysFacePlayer : MonoBehaviour
     {
         if(Target != null)
         {
-            transform.LookAt(Target.transform.position);  
+            transform.LookAt(Target.transform.position);
         }
     }
 }
