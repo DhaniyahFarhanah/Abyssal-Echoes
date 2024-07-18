@@ -14,11 +14,11 @@ public class PlayerMovement : MonoBehaviour
     public float normDrag;
     public float moveMultiplier;
 
-    [Header("Jump")]
+    [Header("OLD_Jump")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    bool canJump;
+    //bool canJump;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        canJump = true;
+        //canJump = true;
     }
 
     // Update is called once per frame
@@ -66,15 +66,15 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        //when to jump
-        if (Input.GetKey(jumpKey) && canJump && grounded)
+        //JUMPING OLD
+        /*if (Input.GetKey(jumpKey) && canJump && grounded)
         {
             canJump = false;
 
             Jump();
 
             Invoke(nameof(ResetJump), jumpCooldown);
-        }
+        }*/
     }
 
     private void MovePlayer()
@@ -138,6 +138,7 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+    //Jumping OLD
     private void Jump()
     {
         //reset y velocity
@@ -148,6 +149,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void ResetJump()
     {
-        canJump = true;
+        //canJump = true;
     }
 }
