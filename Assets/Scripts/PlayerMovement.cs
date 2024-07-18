@@ -93,6 +93,8 @@ public class PlayerMovement : MonoBehaviour
         if (grounded)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * moveMultiplier, ForceMode.Force);
+
+            //add the dust effects
         }
 
         //in air
