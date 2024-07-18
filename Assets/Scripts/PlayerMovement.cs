@@ -23,6 +23,10 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
 
+    [Header("Animations")]
+    public Animator cameraAnim;
+
+    [Header("Other")]
     public Transform orientation;
 
     float horizontalInput;
@@ -51,6 +55,9 @@ public class PlayerMovement : MonoBehaviour
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight, whatIsGround);
         PlayerInput();
         AdjustSpeed();
+
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        cameraAnim.SetFloat("Speed", flatVel.magnitude);
 
         //to be deleted
         Debuging();
