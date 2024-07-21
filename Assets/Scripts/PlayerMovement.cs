@@ -24,6 +24,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Animations")]
     public Animator cameraAnim;
 
+    [Header("Audio")]
+    public AudioSource WaterMovement;
+
     [Header("Other")]
     public Transform orientation;
     public bool isPaused;
@@ -62,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             cameraAnim.SetFloat("Speed", flatVel.magnitude);
+
+            WaterMovement.volume = flatVel.magnitude;
         }
         
 

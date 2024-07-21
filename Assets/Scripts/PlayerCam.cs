@@ -17,6 +17,9 @@ public class PlayerCam : MonoBehaviour
     float xRotation;
     float yRotation;
 
+    [Header("Audio")]
+    public AudioSource waterMovement;
+
     [Header("Clamps")]
     public float xMin;
     public float xMax;
@@ -48,6 +51,19 @@ public class PlayerCam : MonoBehaviour
             // Get raw mouse input
             float mouseX = lookDir.x;
             float mouseY = lookDir.y;
+
+            if(lookDir.x > 0f)
+            {
+                //right
+            }
+            else if (lookDir.x < 0f)
+            {
+                //left
+            }
+            else
+            {
+                //middle
+            }
 
             // Apply smoothing
             Vector2 targetMouseDelta = new Vector2(mouseX, mouseY);

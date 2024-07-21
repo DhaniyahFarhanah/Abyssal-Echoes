@@ -1,7 +1,9 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
@@ -48,5 +50,19 @@ public class PauseManager : MonoBehaviour
                 pause.SetActive(false);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartCoroutine(ReloadScene());
+        }
+    }
+
+    private IEnumerator ReloadScene()
+    {
+        fade.SetTrigger("Restart");
+        yield return new WaitForSeconds(1);
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
+
     }
 }

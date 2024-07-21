@@ -28,36 +28,40 @@ public class ProxyRumble : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (lowFreq > maxFreq * 0.5f && PlayAnimOnce)
+        if(inRange)
         {
-            cam.SetTrigger("Shake");
-            Debug.Log("Shake");
-            PlayAnimOnce = false;
+            if (PlayAnimOnce && lowFreq > maxFreq * 0.5f)
+            {
+                
+                cam.SetTrigger("Shake");
+                Debug.Log("Shake");
+                PlayAnimOnce = false;
+            }
         }
         
         pad = Gamepad.current;
 
-        if(pad!=null)
+        if (inRange)
         {
-            if (inRange)
+            if (elapsedTime < duration)
             {
-                PlayAnimOnce = true;
-                if(elapsedTime < duration)
-                {
-                    elapsedTime += Time.deltaTime;
-                    float t = elapsedTime / duration;
+                elapsedTime += Time.deltaTime;
+                float t = elapsedTime / duration;
 
-                    lowFreq = Mathf.Lerp(lowFreq, maxFreq, Time.deltaTime * rate);
+                lowFreq = Mathf.Lerp(lowFreq, maxFreq, Time.deltaTime * rate);
 
-                    
-                }
-                else
-                {
-                    lowFreq = maxFreq;
-                }
 
+            }
+            else
+            {
+                lowFreq = maxFreq;
+            }
+
+            if (pad != null)
+            {
                 pad.SetMotorSpeeds(lowFreq, 0f);
             }
+
         }
     }
 
@@ -68,7 +72,7 @@ public class ProxyRumble : MonoBehaviour
             //do the proxy rumble
             inRange = true;
             lowFreq = 0;
-            
+            PlayAnimOnce = true;
 
         }
     }
@@ -79,7 +83,11 @@ public class ProxyRumble : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            pad.SetMotorSpeeds(0f, 0f);
+            if (pad != null)
+            {
+                pad.SetMotorSpeeds(0f, 0f);
+            }
+            
             inRange = false;
         }
     }
