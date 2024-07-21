@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerCam : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerCam : MonoBehaviour
     public float sensY;
 
     public Transform orientation;
+
+    public GameObject helmet;
 
     float xRotation;
     float yRotation;
@@ -24,18 +27,25 @@ public class PlayerCam : MonoBehaviour
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
 
+    private Vector2 lookDir;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
+    public void OnLook(InputAction.CallbackContext ctx)
+    {
+        lookDir = ctx.ReadValue<Vector2>().normalized;
+    }
+
     // Update is called once per frame
     void Update()
     {
         // Get raw mouse input
-        float mouseX = Input.GetAxisRaw("Mouse X");
-        float mouseY = Input.GetAxisRaw("Mouse Y");
+        float mouseX = lookDir.x;
+        float mouseY = lookDir.y;
 
         // Apply smoothing
         Vector2 targetMouseDelta = new Vector2(mouseX, mouseY);
@@ -53,22 +63,10 @@ public class PlayerCam : MonoBehaviour
         transform.rotation = targetCameraRotation;
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
-        // Broadcast the rotation to the child script
-        PlayerCamRotation.BroadcastRotation(targetCameraRotation);
+        //give rotation to helmet
+        helmet.GetComponent<HelmetSmoothing>().targetRotation = targetCameraRotation;
         
     }
 }
 
-public static class PlayerCamRotation
-{
-    public static event System.Action<Quaternion> OnRotationBroadcast;
-
-    public static void BroadcastRotation(Quaternion rotation)
-    {
-        if (OnRotationBroadcast != null)
-        {
-            OnRotationBroadcast(rotation);
-        }
-    }
-}
 

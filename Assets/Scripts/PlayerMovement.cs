@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Debug Readings")]
-    public TMP_Text speedText;
-
     [Header("Movement")]
     public float moveSpeed;
     public float forwardDrag;
@@ -33,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     float verticalInput;
 
     Vector3 moveDirection;
+    Vector2 moveInput;
 
     Rigidbody rb;
 
@@ -59,9 +58,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         cameraAnim.SetFloat("Speed", flatVel.magnitude);
 
-        //to be deleted
-        Debuging();
     }
+
+    
 
     private void FixedUpdate()
     {
@@ -84,10 +83,15 @@ public class PlayerMovement : MonoBehaviour
         }*/
     }
 
+    public void OnMove(InputAction.CallbackContext ctx)
+    {
+        moveInput = ctx.ReadValue<Vector2>();
+    }
+
     private void MovePlayer()
     {
         //calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        moveDirection = orientation.forward * moveInput.y + orientation.right * moveInput.x;
 
         //onGround
         if (grounded)
@@ -132,17 +136,6 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             rb.drag = 0;
-        }
-        
-    }
-
-    private void Debuging()
-    {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        if(speedText!= null)
-        {
-            speedText.text = "Speed: " + flatVel.magnitude.ToString();
         }
         
     }

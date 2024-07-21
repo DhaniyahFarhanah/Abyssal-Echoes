@@ -4,37 +4,18 @@ using UnityEngine;
 
 public class HelmetSmoothing : MonoBehaviour
 {
-    public GameObject Camera;
+    public GameObject cam;
 
-    [Header("Child Smoothing")]
-    public float turnSmoothTime = 0.3f; // Smooth time for the child object
-    public float positionSmoothTime = 0.1f;
+    [Header("Smoothing")]
+    public float turnSmoothTime = 0.3f; // Smooth time for looking
+    public float positionSmoothTime = 0.3f; // Smooth time for position
 
-    private Quaternion targetRotation;
+    public Quaternion targetRotation;
 
-    void OnEnable()
+    void LateUpdate()
     {
-        PlayerCamRotation.OnRotationBroadcast += SetTargetRotation;
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSmoothTime * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, cam.transform.position, positionSmoothTime * Time.fixedDeltaTime);
     }
 
-    void OnDisable()
-    {
-        PlayerCamRotation.OnRotationBroadcast -= SetTargetRotation;
-    }
-
-    void Update()
-    {
-        transform.position = Vector3.Lerp(transform.position, Camera.transform.position, positionSmoothTime * Time.deltaTime);
-
-        // Smoothly rotate the child object to match the camera's rotation
-        if (targetRotation != null)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSmoothTime * Time.deltaTime);
-        }
-    }
-
-    public void SetTargetRotation(Quaternion rotation)
-    {
-        targetRotation = rotation;
-    }
 }
