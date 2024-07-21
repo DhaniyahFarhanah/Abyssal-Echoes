@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Breathing : MonoBehaviour
 {
+    private Gamepad pad;
+
     public GameObject bubbles1;
     public GameObject bubbles2;
 
@@ -23,6 +26,7 @@ public class Breathing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        pad = Gamepad.current;
         if (countdown >= 0)
         {
             if (bubbleDuration >= 0)
@@ -42,6 +46,7 @@ public class Breathing : MonoBehaviour
         {
             bubbles1.SetActive(true);
             bubbles2.SetActive(true);
+
             countdown = breathingInterval;
             bubbleDuration = bubbleLifetime;
         }

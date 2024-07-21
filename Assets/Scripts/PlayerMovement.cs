@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpCooldown;
     public float airMultiplier;
     //bool canJump;
-
+    
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
 
@@ -26,9 +26,12 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Other")]
     public Transform orientation;
+    public bool isPaused;
 
     float horizontalInput;
     float verticalInput;
+
+    bool input;
 
     Vector3 moveDirection;
     Vector2 moveInput;
@@ -51,22 +54,29 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight, whatIsGround);
-        PlayerInput();
-        AdjustSpeed();
+        if(!isPaused)
+        {
+            grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight, whatIsGround);
+            PlayerInput();
+            AdjustSpeed();
 
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        cameraAnim.SetFloat("Speed", flatVel.magnitude);
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            cameraAnim.SetFloat("Speed", flatVel.magnitude);
+        }
+        
 
     }
-
-    
 
     private void FixedUpdate()
     {
-        MovePlayer();
-        SpeedControl();
+        if (!isPaused)
+        {
+            MovePlayer();
+            SpeedControl();
+        }
+            
     }
+
     private void PlayerInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");

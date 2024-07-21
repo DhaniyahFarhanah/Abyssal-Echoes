@@ -12,6 +12,7 @@ public class PlayerCam : MonoBehaviour
     public Transform orientation;
 
     public GameObject helmet;
+    public bool isPaused;
 
     float xRotation;
     float yRotation;
@@ -31,8 +32,7 @@ public class PlayerCam : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
     }
 
     public void OnLook(InputAction.CallbackContext ctx)
@@ -43,28 +43,32 @@ public class PlayerCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Get raw mouse input
-        float mouseX = lookDir.x;
-        float mouseY = lookDir.y;
+        if (!isPaused)
+        {
+            // Get raw mouse input
+            float mouseX = lookDir.x;
+            float mouseY = lookDir.y;
 
-        // Apply smoothing
-        Vector2 targetMouseDelta = new Vector2(mouseX, mouseY);
-        currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, targetMouseDelta, ref currentMouseDeltaVelocity, smoothTime);
+            // Apply smoothing
+            Vector2 targetMouseDelta = new Vector2(mouseX, mouseY);
+            currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, targetMouseDelta, ref currentMouseDeltaVelocity, smoothTime);
 
-        // Scale by sensitivity and deltaTime
-        yRotation += currentMouseDelta.x * Time.deltaTime * sensX;
-        xRotation -= currentMouseDelta.y * Time.deltaTime * sensY;
+            // Scale by sensitivity and deltaTime
+            yRotation += currentMouseDelta.x * Time.deltaTime * sensX;
+            xRotation -= currentMouseDelta.y * Time.deltaTime * sensY;
 
-        // Clamp the vertical rotation
-        xRotation = Mathf.Clamp(xRotation, xMin, xMax);
+            // Clamp the vertical rotation
+            xRotation = Mathf.Clamp(xRotation, xMin, xMax);
 
-        // Rotate the camera and orientation
-        Quaternion targetCameraRotation = Quaternion.Euler(xRotation, yRotation, 0);
-        transform.rotation = targetCameraRotation;
-        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+            // Rotate the camera and orientation
+            Quaternion targetCameraRotation = Quaternion.Euler(xRotation, yRotation, 0);
+            transform.rotation = targetCameraRotation;
+            orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
-        //give rotation to helmet
-        helmet.GetComponent<HelmetSmoothing>().targetRotation = targetCameraRotation;
+            //give rotation to helmet
+            helmet.GetComponent<HelmetSmoothing>().targetRotation = targetCameraRotation;
+        }
+        
         
     }
 }
