@@ -35,7 +35,6 @@ public class RandomAmbienceSounds : MonoBehaviour
     void Update()
     {
         Debug.Log(ambienceSoundSource.isPlaying);
-
         if (soundDone)
         {
             randomDelay = Random.Range(randomDelayMin, randomDelayMax);
@@ -71,11 +70,11 @@ public class RandomAmbienceSounds : MonoBehaviour
             if (volumeElapsedTime < clipLength/4)
             {
                 volumeElapsedTime += Time.deltaTime;
-                ambienceSoundSource.volume = Mathf.Lerp(0f, 1f, volumeElapsedTime / (clipLength/4));
+                ambienceSoundSource.volume = Mathf.Lerp(0f, 0.7f, volumeElapsedTime / (clipLength/4));
             }
             else
             {
-                ambienceSoundSource.volume = 1.0f; // Ensure it ends at the left
+                ambienceSoundSource.volume = 0.7f; // Ensure it ends at the left
             }
         }
 
@@ -84,7 +83,7 @@ public class RandomAmbienceSounds : MonoBehaviour
             if (volumeElapsedTime < clipLength / 4)
             {
                 volumeElapsedTime += Time.deltaTime;
-                ambienceSoundSource.volume = Mathf.Lerp(1f, 0f, volumeElapsedTime / (clipLength / 4));
+                ambienceSoundSource.volume = Mathf.Lerp(0.7f, 0f, volumeElapsedTime / (clipLength / 4));
             }
             else
             {

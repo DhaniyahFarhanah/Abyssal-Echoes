@@ -9,7 +9,7 @@ public class FootstepSound : MonoBehaviour
     public RumbleManager manager;
     public GameObject referenceObject;
 
-    bool PlayOnce;
+    public bool PlayOnce;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +19,7 @@ public class FootstepSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (referenceObject.activeInHierarchy)
         {
             if (PlayOnce)
@@ -27,7 +28,6 @@ public class FootstepSound : MonoBehaviour
                 PlayOnce = false;
             }
             
-
             if (manager.left)
             {
                 footstep.panStereo = -1f;
