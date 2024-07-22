@@ -31,7 +31,7 @@ public class PlayerCam : MonoBehaviour
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
 
-    private Vector2 lookDir;
+    public Vector2 lookDir;
 
     void Start()
     {
@@ -52,18 +52,24 @@ public class PlayerCam : MonoBehaviour
             float mouseX = lookDir.x;
             float mouseY = lookDir.y;
 
-            if(lookDir.x > 0f)
+            if(lookDir.magnitude > 0f)
             {
-                //right
+                if (lookDir.x > 0.1f)
+                {
+                    waterMovement.panStereo = Mathf.Lerp(waterMovement.panStereo, 0.7f, Time.deltaTime * 3f);
+                }
+                else if (lookDir.x < 0.1f)
+                {
+                    waterMovement.panStereo = Mathf.Lerp(waterMovement.panStereo, -0.7f, Time.deltaTime * 3f);
+                }
             }
-            else if (lookDir.x < 0f)
-            {
-                //left
-            }
+        
             else
             {
-                //middle
+                waterMovement.panStereo = Mathf.Lerp(waterMovement.panStereo, 0f, Time.deltaTime * 1.5f);
             }
+           
+            
 
             // Apply smoothing
             Vector2 targetMouseDelta = new Vector2(mouseX, mouseY);

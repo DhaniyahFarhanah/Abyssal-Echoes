@@ -9,6 +9,7 @@ public class Breathing : MonoBehaviour
 
     public GameObject bubbles1;
     public GameObject bubbles2;
+    public AudioSource bubbleSound;
 
     public float bubbleLifetime;
     float bubbleDuration;
@@ -46,6 +47,11 @@ public class Breathing : MonoBehaviour
         {
             bubbles1.SetActive(true);
             bubbles2.SetActive(true);
+
+            if (!bubbleSound.isPlaying)
+            {
+                bubbleSound.Play();
+            }
 
             countdown = breathingInterval;
             bubbleDuration = bubbleLifetime;

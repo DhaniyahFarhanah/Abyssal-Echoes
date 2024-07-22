@@ -17,6 +17,10 @@ public class RumbleManager : MonoBehaviour
     public float highFreq;
     public float duration;
 
+    public AudioSource audioSource;
+    public bool left;
+    public bool right;
+
     public void Start()
     {
         play = true;
@@ -30,7 +34,18 @@ public class RumbleManager : MonoBehaviour
         {
             if (referenceObject.activeInHierarchy)
             {
-                PulseRumble(lowFreq, highFreq, duration);
+                if (left)
+                {
+                    audioSource.spatialBlend = -1f;
+                    PulseRumble(highFreq, 0f, duration);
+
+                }
+                if (right)
+                {
+                    audioSource.spatialBlend = 1f;
+                    PulseRumble(0f, highFreq, duration);
+                }
+                
             }
         }
         else

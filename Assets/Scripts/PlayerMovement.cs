@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public PlayerCam cam;
+
     [Header("Movement")]
     public float moveSpeed;
     public float forwardDrag;
@@ -26,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource WaterMovement;
+    public AudioSource breathingSounds;
+    public AudioClip normBreath;
+    public AudioClip panicBreath;
 
     [Header("Other")]
     public Transform orientation;
@@ -35,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     float verticalInput;
 
     bool input;
+
+    public bool panic;
 
     Vector3 moveDirection;
     Vector2 moveInput;
@@ -66,10 +73,30 @@ public class PlayerMovement : MonoBehaviour
             Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             cameraAnim.SetFloat("Speed", flatVel.magnitude);
 
-            WaterMovement.volume = flatVel.magnitude;
-        }
-        
+            if(flatVel.magnitude > 0.1f)
+            {
+                WaterMovement.volume = Mathf.Lerp(WaterMovement.volume, flatVel.magnitude, Time.deltaTime * 1.5f);
+            }
+            else if(cam.lookDir.magnitude > 0.1f)
+            {
+                WaterMovement.volume = Mathf.Lerp(WaterMovement.volume, 1f, Time.deltaTime * 1.5f);
+            }
+            else
+            {
+                WaterMovement.volume = Mathf.Lerp(WaterMovement.volume, 0f, Time.deltaTime * 1.5f);
+            }
 
+            if (panic)
+            {
+                breathingSounds.clip = panicBreath;
+                if (!breathingSounds.isPlaying)
+                {
+                    breathingSounds.Play();
+                }
+                StartCoroutine(Panic(panicBreath.length));
+                panic = false;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -167,5 +194,23 @@ public class PlayerMovement : MonoBehaviour
     private void ResetJump()
     {
         //canJump = true;
+    }
+
+    IEnumerator Panic(float length)
+    {
+        yield return new WaitForSeconds(length);
+        breathingSounds.clip = normBreath;
+        if (!breathingSounds.isPlaying)
+        {
+            breathingSounds.Play();
+        }   
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("wall"))
+        {
+            panic = true;
+        }
     }
 }

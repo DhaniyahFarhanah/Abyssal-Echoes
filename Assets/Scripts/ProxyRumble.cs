@@ -74,6 +74,7 @@ public class ProxyRumble : MonoBehaviour
             lowFreq = 0;
             PlayAnimOnce = true;
 
+            other.gameObject.GetComponent<PlayerMovement>().panic = true;
         }
     }
 
